@@ -16,8 +16,10 @@
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
 
-#if _INTERNAL_MLF_RC_ENABLED
-#import <FBRetainCycleDetector/FBRetainCycleDetector.h>
+#if __has_include(<MLeaksFinder/MLeaksFinder-Swift.h>)
+#import <MLeaksFinder/MLeaksFinder-Swift.h>
+#elif __has_include("MLeaksFinder-Swift.h")
+#import "MLeaksFinder-Swift.h"
 #endif
 
 static const void *const kViewStackKey = &kViewStackKey;
@@ -27,7 +29,7 @@ const void *const kLatestSenderKey = &kLatestSenderKey;
 @implementation NSObject (MemoryLeak)
 
 - (BOOL)willDealloc {
-    if (!MLeaksFinderReportEnabled) {
+    if (![[MLeaksFinderConfig defaultConfig] leaksFinderReportEnabled]) {
         [leakedObjectPtrs removeAllObjects];
         return YES;
     }
@@ -80,7 +82,7 @@ const void *const kLatestSenderKey = &kLatestSenderKey;
 }
 
 - (void)willReleaseChildren:(NSArray *)children {
-    if (!MLeaksFinderReportEnabled) {
+    if (![[MLeaksFinderConfig defaultConfig] leaksFinderReportEnabled]) {
         [leakedObjectPtrs removeAllObjects];
         return;
     }
@@ -147,17 +149,6 @@ const void *const kLatestSenderKey = &kLatestSenderKey;
 
 + (void)swizzleSEL:(SEL)originalSEL withSEL:(SEL)swizzledSEL {
 #if _INTERNAL_MLF_ENABLED
-    
-#if _INTERNAL_MLF_RC_ENABLED
-    // Just find a place to set up FBRetainCycleDetector.
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [FBAssociationManager hook];
-        });
-    });
-#endif
-    
     Class class = [self class];
     
     Method originalMethod = class_getInstanceMethod(class, originalSEL);
