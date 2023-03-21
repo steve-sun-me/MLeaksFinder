@@ -27,3 +27,5 @@
 #elif COCOAPODS
 #define _INTERNAL_MLF_RC_ENABLED COCOAPODS
 #endif
+
+static BOOL MLeaksFinderReportEnabled = false;

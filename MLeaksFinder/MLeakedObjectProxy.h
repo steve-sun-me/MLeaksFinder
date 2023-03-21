@@ -12,6 +12,8 @@
 
 #import <Foundation/Foundation.h>
 
+static NSMutableSet *leakedObjectPtrs;
+
 @interface MLeakedObjectProxy : NSObject
 
 + (BOOL)isAnyObjectLeakedAtPtrs:(NSSet *)ptrs;

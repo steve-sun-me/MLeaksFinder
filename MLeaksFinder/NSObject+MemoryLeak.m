@@ -27,6 +27,11 @@ const void *const kLatestSenderKey = &kLatestSenderKey;
 @implementation NSObject (MemoryLeak)
 
 - (BOOL)willDealloc {
+    if (!MLeaksFinderReportEnabled) {
+        [leakedObjectPtrs removeAllObjects];
+        return YES;
+    }
+
     NSString *className = NSStringFromClass([self class]);
     if ([[NSObject classNamesWhitelist] containsObject:className])
         return NO;
@@ -75,6 +80,11 @@ const void *const kLatestSenderKey = &kLatestSenderKey;
 }
 
 - (void)willReleaseChildren:(NSArray *)children {
+    if (!MLeaksFinderReportEnabled) {
+        [leakedObjectPtrs removeAllObjects];
+        return;
+    }
+
     NSArray *viewStack = [self viewStack];
     NSSet *parentPtrs = [self parentPtrs];
     for (id child in children) {

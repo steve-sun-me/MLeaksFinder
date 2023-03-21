@@ -21,8 +21,6 @@
 #import <FBRetainCycleDetector/FBRetainCycleDetector.h>
 #endif
 
-static NSMutableSet *leakedObjectPtrs;
-
 @interface MLeakedObjectProxy ()<UIAlertViewDelegate>
 @property (nonatomic, weak) id object;
 @property (nonatomic, strong) NSNumber *objectPtr;
@@ -31,13 +29,12 @@ static NSMutableSet *leakedObjectPtrs;
 
 @implementation MLeakedObjectProxy
 
++ (void)load {
+    leakedObjectPtrs = [[NSMutableSet alloc] init];
+}
+
 + (BOOL)isAnyObjectLeakedAtPtrs:(NSSet *)ptrs {
     NSAssert([NSThread isMainThread], @"Must be in main thread.");
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        leakedObjectPtrs = [[NSMutableSet alloc] init];
-    });
     
     if (!ptrs.count) {
         return NO;
