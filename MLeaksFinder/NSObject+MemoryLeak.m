@@ -43,7 +43,7 @@ const void *const kLatestSenderKey = &kLatestSenderKey;
         return NO;
     
     __weak id weakSelf = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         __strong id strongSelf = weakSelf;
         [strongSelf assertNotDealloc];
     });
@@ -132,6 +132,10 @@ const void *const kLatestSenderKey = &kLatestSenderKey;
                      @"UINavigationBar",
                      @"_UIAlertControllerActionView",
                      @"_UIVisualEffectBackdropView",
+                     @"_UIAlertControllerTextField",
+                     @"_UIAlertControllerView",
+                     @"_UIAlertAction",
+                     @"UIAlertController",
                      nil];
         
         // System's bug since iOS 10 and not fixed yet up to this ci.
