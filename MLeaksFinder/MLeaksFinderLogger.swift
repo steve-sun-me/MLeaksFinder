@@ -7,8 +7,6 @@ public protocol MLeaksFinderLoggerType {
 
 @objc
 public final class MLeaksFinderLogger: NSObject, MLeaksFinderLoggerType {
-    @objc public var pauseExecutionEnabled: Bool = true
-
     public func log(_ title: String, _ message: String) {
         print("-------------------------------")
         print(title)
@@ -16,7 +14,7 @@ public final class MLeaksFinderLogger: NSObject, MLeaksFinderLoggerType {
         print(message)
         print("-------------------------------")
 
-        if pauseExecutionEnabled {
+        if MLeaksFinderRunTimeConfig.default.pauseExecutionEnabled {
             raise(SIGINT)
         }
     }
